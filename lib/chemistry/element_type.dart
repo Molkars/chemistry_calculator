@@ -1,13 +1,28 @@
 part of molkars_chemistry;
 
 enum ElementType {
+  NonMetal,
+  NobleGas,
   AlkaliMetal,
   AlkalineEarthMetal,
+  Metalloid,
+  Halogen,
+  TransitionMetal,
+  Metal,
   Lanthanide,
   Actinide,
-  TransitionMetal,
-  PostTransitionMetal,
-  Metalloid,
+  PostTransitionMetal
+}
+
+enum BondingType {
+  Diatomic,
+  Covalent,
+  Metallic,
+  Atomic
+}
+
+enum SimpleElementType {
   NonMetal,
-  NobleGas
+  Metalloid,
+  Metal
 }

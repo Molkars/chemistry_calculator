@@ -1,7 +1,7 @@
 part of molkars_chemistry;
 
 enum PhysicalState {
-  liquid,
-  solid,
-  gas
+  Liquid,
+  Solid,
+  Gas
 }

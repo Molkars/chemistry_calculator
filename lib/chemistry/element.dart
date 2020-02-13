@@ -3,37 +3,43 @@ part of molkars_chemistry;
 class Element {
   final String name;
   final String symbol;
-  final List<int> charges;
-  final int atomicNumber;
-  final double atomicMass;
-  final int group;
-  final int period;
   final String electronConfiguration;
-  final PhysicalState physicalState;
-  final ElementType grouping;
-  final bool diatomic;
-  final bool radioactive;
-  final bool synthetic;
-  final double radius;
+  final String discoveredBy;
+  final String namedBy;
+
+  final double atomicMass;
+  final double boilingPoint;
+  final double density;
+  final double meltingPoint;
+  final double molarHeat;
+  final double electronAffinity;
   final double electronegativity;
-  final double firstIonization;
+  final int atomicNumber;
+  final int period;
+  final int group;
+
+  final PhysicalState state;
+  final SimpleElementType simpleType;
+  final ElementType type;
 
   const Element({
     @required this.name,
+    @required this.atomicMass,
+    @required this.meltingPoint,
+    @required this.boilingPoint,
+    @required this.electronConfiguration,
     @required this.symbol,
     @required this.atomicNumber,
-    @required this.charges,
-    @required this.atomicMass,
-    @required this.group,
-    @required this.period,
-    @required this.electronConfiguration,
-    @required this.physicalState,
-    @required this.grouping,
-    @required this.radius,
-    @required this.radioactive,
-    @required this.synthetic,
     @required this.electronegativity,
-    @required this.firstIonization,
-    this.diatomic = false,
+    @required this.state,
+    @required this.density,
+    @required this.discoveredBy,
+    @required this.electronAffinity,
+    @required this.group,
+    @required this.molarHeat,
+    @required this.namedBy,
+    @required this.period,
+    @required this.type,
+    @required this.simpleType
   });
 }
