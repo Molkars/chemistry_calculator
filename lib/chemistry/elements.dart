@@ -13,6 +13,14 @@ enum Elements {
   Neon,
   Sodium,
   Magnesium,
+  Aluminum,
+  Silicon,
+  Phosphorus,
+  Sulfur,
+  Chlorine,
+  Argon,
+  Potassium,
+  Calcium,
   Scandium,
   Titanium,
   Vanadium,
@@ -52,6 +60,8 @@ enum Elements {
   Lanthanum,
   Cerium,
   Praseodymium,
+  Neodymium,
+  Promethium,
   Samarium,
   Europium,
   Gadolinium,
@@ -103,13 +113,13 @@ enum Elements {
   Darmstadtium,
   Roentgenium,
   Copernicium,
-  Ununtrium,
-  Flerovium,
   Nihonium,
+  Flerovium,
   Moscovium,
+  Livermorium,
   Tennessine,
   Oganesson,
-  Ununennium
+  Ununennium,
 }
 
 extension Interaction on Elements {
@@ -354,7 +364,7 @@ extension Interaction on Elements {
     type: null,
     simpleType: null,
     ),
-    Elements.Aluminium: const Element(
+    Elements.Aluminum: const Element(
     name: 'Aluminium',
     atomicMass: 26.98153857,
     boilingPoint: 2743,
