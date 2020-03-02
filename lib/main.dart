@@ -1,10 +1,11 @@
 import 'package:chemistry_calculator/chemistry/chemistry.dart';
+import 'package:chemistry_calculator/widgets/element_widget.dart';
+import 'package:chemistry_calculator/widgets/gesture_transformable.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,57 +13,63 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: MyHomePage(),
+      home: PeriodicTable(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+@immutable
+class PeriodicTable extends StatefulWidget {
+  final double elementWidth;
+  final double elementHeight;
 
-  final String title;
+  PeriodicTable({Key key, this.elementHeight = 72, this.elementWidth = 64}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _PeriodicTableState createState() => _PeriodicTableState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-
-
-  int _counter = 0;
-
-  void _incrementCounter() => setState(() => _counter++);
-
+class _PeriodicTableState extends State<PeriodicTable> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          var visibleSize = Size(
+              64 + (18.0 * widget.elementWidth),
+              64 + (9.0 * widget.elementHeight)
+          );
+
+          return GestureTransformable(
+            disableRotation: true,
+            disableScale: false,
+            disableTranslation: false,
+            maxScale: 3,
+            minScale: 0.25,
+
+            size: Size(constraints.maxWidth, constraints.maxHeight),
+            boundaryRect: Rect.fromLTWH(
+              -visibleSize.width / 2,
+              -visibleSize.height / 2,
+              visibleSize.width / 2,
+              visibleSize.height / 2
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            initialTranslation: Offset(constraints.maxWidth / 2, constraints.maxHeight / 2),
+            child: Container(
+              width: 64 + (18.0 * widget.elementWidth),
+              height: 64 + (9.0 * widget.elementHeight),
+              child: Stack(
+                children: ElementInteraction.elements.values.map((e) => ElementWidget(
+                  element: e,
+                  width: widget.elementWidth,
+                  height: widget.elementHeight,
+                )).toList(),
+              ),
             ),
-          ],
-        ),
+          );
+        },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-
-  @override
-  void initState() {
-    super.initState();
-    Parser().parseData();
-  }
 }
+

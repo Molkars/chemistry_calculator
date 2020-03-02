@@ -1,6 +1,6 @@
 part of molkars_chemistry;
 
-class Element {
+class PeriodicElement {
   final String name;
   final String symbol;
   final String electronConfiguration;
@@ -22,7 +22,7 @@ class Element {
   final SimpleElementType simpleType;
   final ElementType type;
 
-  const Element({
+  const PeriodicElement({
     @required this.name,
     @required this.atomicMass,
     @required this.meltingPoint,
