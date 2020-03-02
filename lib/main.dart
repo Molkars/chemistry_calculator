@@ -1,7 +1,9 @@
 import 'package:chemistry_calculator/chemistry/chemistry.dart';
 import 'package:chemistry_calculator/widgets/element_widget.dart';
 import 'package:chemistry_calculator/widgets/gesture_transformable.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,43 +32,25 @@ class PeriodicTable extends StatefulWidget {
 }
 
 class _PeriodicTableState extends State<PeriodicTable> {
+  Matrix4 _matrix = Matrix4.identity();
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-//          var visibleSize = Size(
-//             64 + (18.0 * widget.elementWidth),
-//              64 + (9.0 * widget.elementHeight)
-//          );
-          var visibleSize = Size(
-            3 * constraints.maxWidth,
-            2 * constraints.maxHeight,
-          );
-
-          return GestureTransformable(
-            disableRotation: true,
-            disableScale: false,
-            disableTranslation: false,
-            maxScale: 3,
-            minScale: 0.01,
-            size: Size(constraints.maxWidth, constraints.maxHeight),
-            boundaryRect: Rect.fromLTWH(
-              -visibleSize.width / 2,
-              -visibleSize.height / 2,
-              visibleSize.width / 2,
-              visibleSize.height / 2
-            ),
-            initialTranslation: Offset(constraints.maxWidth / 2, constraints.maxHeight / 2),
-            child: SizedBox.expand(
-              child: Container(
+          return MatrixGestureDetector(
+            focalPointAlignment: Alignment.center,
+            shouldRotate: false,
+            onMatrixUpdate: (m, tm, sm, rm) => setState(() => _matrix = m),
+            child: Container(
+              color: Colors.green,
+              child: Transform(
+                transform: _matrix,
                 child: Stack(
-                  children: ElementInteraction.elements.values.map((e) => ElementWidget(
-                    element: e,
-                    width: widget.elementWidth,
-                    height: widget.elementHeight,
-                  )).toList(),
+                  overflow: Overflow.visible,
+                  children: getElements(context),
                 ),
               ),
             ),
@@ -74,6 +58,16 @@ class _PeriodicTableState extends State<PeriodicTable> {
         },
       ),
     );
+  }
+
+  List<Widget> getElements(BuildContext context) {
+    return ElementInteraction.elements.values.map((PeriodicElement e) {
+      return ElementWidget(
+        translation: Offset.zero,
+        scale: 1.0,
+        element: e,
+      );
+    }).toList();
   }
 }
 

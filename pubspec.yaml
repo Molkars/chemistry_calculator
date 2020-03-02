@@ -17,6 +17,8 @@ environment:
   sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
+  matrix_gesture_detector: ^0.1.0
+
   flutter:
     sdk: flutter
 
