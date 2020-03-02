@@ -29,15 +29,20 @@ class PeriodicTable extends StatefulWidget {
   _PeriodicTableState createState() => _PeriodicTableState();
 }
 
-class _PeriodicTableState extends State<PeriodicTable> with SingleTickerProviderStateMixin {
+class _PeriodicTableState extends State<PeriodicTable> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+//          var visibleSize = Size(
+//             64 + (18.0 * widget.elementWidth),
+//              64 + (9.0 * widget.elementHeight)
+//          );
           var visibleSize = Size(
-              64 + (18.0 * widget.elementWidth),
-              64 + (9.0 * widget.elementHeight)
+            3 * constraints.maxWidth,
+            2 * constraints.maxHeight,
           );
 
           return GestureTransformable(
@@ -45,8 +50,7 @@ class _PeriodicTableState extends State<PeriodicTable> with SingleTickerProvider
             disableScale: false,
             disableTranslation: false,
             maxScale: 3,
-            minScale: 0.25,
-
+            minScale: 0.01,
             size: Size(constraints.maxWidth, constraints.maxHeight),
             boundaryRect: Rect.fromLTWH(
               -visibleSize.width / 2,
@@ -55,15 +59,15 @@ class _PeriodicTableState extends State<PeriodicTable> with SingleTickerProvider
               visibleSize.height / 2
             ),
             initialTranslation: Offset(constraints.maxWidth / 2, constraints.maxHeight / 2),
-            child: Container(
-              width: 64 + (18.0 * widget.elementWidth),
-              height: 64 + (9.0 * widget.elementHeight),
-              child: Stack(
-                children: ElementInteraction.elements.values.map((e) => ElementWidget(
-                  element: e,
-                  width: widget.elementWidth,
-                  height: widget.elementHeight,
-                )).toList(),
+            child: SizedBox.expand(
+              child: Container(
+                child: Stack(
+                  children: ElementInteraction.elements.values.map((e) => ElementWidget(
+                    element: e,
+                    width: widget.elementWidth,
+                    height: widget.elementHeight,
+                  )).toList(),
+                ),
               ),
             ),
           );
