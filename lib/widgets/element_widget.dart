@@ -3,29 +3,36 @@ import 'package:flutter/material.dart';
 
 class ElementWidget extends StatelessWidget {
   final PeriodicElement element;
-  final double scale;
-  final Offset translation;
+  final double width;
+  final double height;
 
-
-  const ElementWidget({this.element, this.scale, this.translation});
+  const ElementWidget({Key key, this.element, this.width, this.height}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
+    double _width = width;
+    double _height = height;
+
+    if (width == null || height == null) {
+      MediaQueryData mediaQuery = MediaQuery.of(context);
+      _width = (mediaQuery.size.width - 64) / 18;
+      _height = (mediaQuery.size.height - 80) / 9;
+    }
 
     return Positioned(
-      left: 32 + (64 * (element.group - 1.0)),
-      top: 32 + (72 * (element.period - 1.0)),
+      left: 32 + (_width * (element.group - 1.0)),
+      top: 32 + (_height * (element.period - 1.0)),
       child: GestureDetector(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(
-            builder: (context) => ElementFocus(this.element),
+            builder: (context) => ElementFocus(element: element),
             maintainState: true,
           ));
         },
         child: Container(
-          width: 64 * scale,
-          height: 72 * scale,
+          width: width,
+          height: height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -39,18 +46,23 @@ class ElementWidget extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
-              Text(element.symbol, style: TextStyle(fontSize: 24 * scale)),
+              // Element Symbol
+              FittedBox(child: Text(element.symbol, style: TextStyle(fontSize: 24))),
+
+              // Element
               Positioned(
-                top: 4,
-                right: 4,
+                top: 2,
+                right: 2,
                 child: Hero(
                   tag: this.element.name,
-                  child: Text(element.atomicNumber.toString(), style: TextStyle(fontSize: 18 * scale))
+                  child: FittedBox(child: Text(element.atomicNumber.toString(), style: TextStyle(fontSize: 18)))
                 ),
               ),
+
+              // Element Name
               Positioned(
-                bottom: 4,
-                child: Text(element.name, style: TextStyle(fontSize: 12 * scale)),
+                bottom: 2,
+                child: FittedBox(child: Text(element.name, style: TextStyle(fontSize: 12))),
               )
             ],
           ),
