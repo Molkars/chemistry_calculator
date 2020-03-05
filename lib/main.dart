@@ -52,7 +52,23 @@ class _PeriodicTableState extends State<PeriodicTable> {
             body: MatrixGestureDetector(
               shouldRotate: false,
               shouldScale: false,
-              onMatrixUpdate: (m, tm, sm, rm) => setState(() => _translation = m),
+              onMatrixUpdate: (m, tm, sm, rm) {
+                if (sm.storage[0] < 0.5) {
+                  sm.storage[0] = 0.5;
+                  setState(() {
+                    _translation = sm;
+                  });
+                } else if (sm.storage[5] > 2.5) {
+                  sm.storage[5] = 2.5;
+                  setState(() {
+                    _translation = sm;
+                  });
+                } else {
+                  setState(() {
+                    _translation = m;
+                  });
+                }
+              },
               child: Container(
                 color: Colors.amber,
                 child: Transform.scale(
