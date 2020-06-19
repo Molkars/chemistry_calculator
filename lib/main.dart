@@ -9,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeRight,
-    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeLeft
   ]);
   SystemChrome.setEnabledSystemUIOverlays([]);
 

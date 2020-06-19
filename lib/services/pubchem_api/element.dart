@@ -1,5 +1,6 @@
 import 'package:chemistry_calculator/services/pubchem_api/pubchem_api.dart';
-import 'package:flutter/material.dart' show Color;
+import 'package:chemistry_calculator/util/element_positions.dart';
+import 'package:flutter/material.dart' show Color, Offset;
 
 class PeriodicElement {
   int atomicNumber;
@@ -19,6 +20,7 @@ class PeriodicElement {
   double density;
   ElementBlock groupBlock;
   int yearDiscovered;
+  Offset position;
 
   PeriodicElement({
     this.atomicNumber,
@@ -37,7 +39,8 @@ class PeriodicElement {
     this.boilingPoint,
     this.density,
     this.groupBlock,
-    this.yearDiscovered
+    this.yearDiscovered,
+    this.position,
   });
 
   factory PeriodicElement.fromList(List<String> list) {
@@ -59,6 +62,7 @@ class PeriodicElement {
       density: double.parse(list.elementAt(14).isEmpty ? "-1" : list.elementAt(14)),
       groupBlock: ElementBlockMethods.fromString(list.elementAt(15)),
       yearDiscovered: list.elementAt(16) == "Ancient" ? -1 : int.parse(list.elementAt(16)),
+      position: elementPositions[list.elementAt(1)?.toLowerCase()],
     );
   }
 }

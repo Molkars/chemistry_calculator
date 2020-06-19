@@ -1,5 +1,7 @@
+import 'package:chemistry_calculator/providers/home_provider.dart';
 import 'package:chemistry_calculator/services/pubchem_api/pubchem_api.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PeriodicElementTile extends StatelessWidget {
   final PeriodicElement element;
@@ -8,23 +10,49 @@ class PeriodicElementTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    final style = TextStyle(color: element.cpkHexColor.inverse);
+    final provider = Provider.of<HomeProvider>(context);
 
-    return Hero(
-      tag: element.symbol,
-      child: Container(
-        color: element.cpkHexColor ?? Colors.amber,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(element.atomicNumber.toString(), style: style),
-            Text(element.symbol, style: style),
-            Text(element.name, style: style),
-          ],
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, layout) {
+        final padding = layout.maxWidth / 18;
+        final style = TextStyle(color: element.cpkHexColor.contrasting, fontWeight: FontWeight.bold);
+
+        return Hero(
+          tag: element.symbol,
+          child: Material(
+            color: element.cpkHexColor.opacity != 1.0 ? element.cpkHexColor.withOpacity(provider.elements.indexOf(element) / provider.elements.length.toDouble()) : element.cpkHexColor,
+            child: InkWell(
+              onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(
+                    backgroundColor: element.cpkHexColor.withOpacity(1.0),
+                    title: Text(element.name, style: style),
+                  ),
+                  backgroundColor: Color.lerp(element.cpkHexColor.withOpacity(1.0), Colors.white, 0.75),
+                )
+              )),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: FittedBox(
+                      child: Text(element.name, style: style),
+                    ),
+                  ),
+                  Positioned(
+                    top: padding,
+                    right: padding,
+                    child: FittedBox(
+                      child: Text(element.atomicNumber.toString(), style: style),
+                    ),
+                  )
+                ],
+              )
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -38,4 +66,7 @@ extension ColorMethods on Color {
     return Color.fromARGB(255, r, g, b);
   }
 
+  Color get contrasting {
+    return ThemeData.estimateBrightnessForColor(this) == Brightness.light ? Colors.black : Colors.white;
+  }
 }

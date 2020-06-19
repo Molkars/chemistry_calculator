@@ -6,25 +6,26 @@ import 'package:flutter/material.dart';
 
 class HomeProvider with ChangeNotifier {
 
-  HomeProvider(this.context) {
+  HomeProvider(this.context) : assert(context != null)
+  {
     getElements().then((value) => elements = value);
   }
 
   final BuildContext context;
-  Offset _translation = Offset.zero;
-  double _scale = 1.0;
   List<PeriodicElement> _elements;
 
-
-  Offset get translation => _translation;
-  set translation(Offset value) {
-    _translation = value;
-    notifyListeners();
-  }
+  double _scale = 1.0, prevScale = 1.0;
+  Offset _off = Offset.zero, prevFocal = Offset.zero;
 
   double get scale => _scale;
   set scale(double value) {
     _scale = value;
+    notifyListeners();
+  }
+
+  Offset get off => _off;
+  set off(Offset value) {
+    _off = value;
     notifyListeners();
   }
 
