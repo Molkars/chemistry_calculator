@@ -1,5 +1,6 @@
 import 'package:chemistry_calculator/providers/home_provider.dart';
 import 'package:chemistry_calculator/services/pubchem_api/pubchem_api.dart';
+import 'package:chemistry_calculator/widgets/element_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,13 +24,7 @@ class PeriodicElementTile extends StatelessWidget {
             color: element.cpkHexColor.opacity != 1.0 ? element.cpkHexColor.withOpacity(provider.elements.indexOf(element) / provider.elements.length.toDouble()) : element.cpkHexColor,
             child: InkWell(
               onTap: () => Navigator.push(context, MaterialPageRoute(
-                builder: (context) => Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: element.cpkHexColor.withOpacity(1.0),
-                    title: Text(element.name, style: style),
-                  ),
-                  backgroundColor: Color.lerp(element.cpkHexColor.withOpacity(1.0), Colors.white, 0.75),
-                )
+                builder: (context) => ElementView(element),
               )),
               child: Stack(
                 alignment: Alignment.center,

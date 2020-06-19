@@ -13,7 +13,6 @@ void main() async {
   ]);
   SystemChrome.setEnabledSystemUIOverlays([]);
 
-
   runApp(AppView());
 }
 
@@ -25,6 +24,7 @@ class AppView extends StatelessWidget {
         ChangeNotifierProvider(create: (BuildContext context) => HomeProvider(context)),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData.dark()..copyWith(accentColor: Colors.amber),
         home: ChemistryCalculator(),
       ),

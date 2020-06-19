@@ -4,11 +4,15 @@ import 'package:chemistry_calculator/providers/home_provider.dart';
 import 'package:chemistry_calculator/services/pubchem_api/pubchem_api.dart';
 import 'package:chemistry_calculator/widgets/element_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+
+const double _kMinFlingVelocity = 800.0;
 
 class ChemistryCalculator extends StatelessWidget {
 
-  static const kElementSize = const Size(56, 64);
+  static const Size kElementSize = const Size(56, 70);
+  static const double kDivisionSize = 20.0;
 
   const ChemistryCalculator();
 
@@ -22,9 +26,11 @@ class ChemistryCalculator extends StatelessWidget {
           _body() {
             List<Widget> _children =
             provider.elements.map<Widget>((PeriodicElement element) {
+
+
               return Positioned(
                 // Offset plus the height of the tile + 20 pixels if the element is an actinide or lanthanide
-                top: provider.off.dy + (element.position.dy * kElementSize.height * provider.scale) + (element.position.dy > 6 ? 20 : 0),
+                top: provider.off.dy + (element.position.dy * kElementSize.height * provider.scale) + (element.position.dy > 6 ? kDivisionSize : 0),
                 // Offset plus the width of the tile(posX * width * scale)
                 left: provider.off.dx + (element.position.dx * kElementSize.width * provider.scale),
                 child: Transform.scale(
@@ -36,7 +42,23 @@ class ChemistryCalculator extends StatelessWidget {
                   )
                 ),
               );
-            }).toList();
+            }).toList()
+            ..add(Positioned(
+              right: 4,
+              top: -4,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.25),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: Icon(FontAwesomeIcons.atom),
+                  onPressed: () {
+                    // TODO Open settings view
+                  },
+                ),
+              ),
+            ));
 
             return Stack(
               children: _children,
@@ -70,13 +92,44 @@ class ChemistryCalculator extends StatelessWidget {
   }
 }
 
-class CustomGestureDetector extends StatelessWidget {
+class CustomGestureDetector extends StatefulWidget {
 
   final Widget child;
   static const Size kElementSize = ChemistryCalculator.kElementSize;
   static final Size kPeriodicTableSize = Size(kElementSize.width * 18 + 8, kElementSize.height * 9 + 36);
 
   const CustomGestureDetector(this.child);
+
+  @override
+  _CustomGestureDetectorState createState() => _CustomGestureDetectorState();
+}
+
+class _CustomGestureDetectorState extends State<CustomGestureDetector> with SingleTickerProviderStateMixin {
+
+  AnimationController _controller;
+  Animation<Offset> _flingAnimation;
+
+  @override
+  void initState() {
+    _controller = AnimationController(vsync: this)
+      ..addListener(() {
+        Provider.of<HomeProvider>(context, listen: false).off = _flingAnimation.value;
+      });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Offset _clampOffset(Offset input, Size overflow) {
+    return Offset(
+        input.dx.clamp(-overflow.width > 0 ? 0.0 : -overflow.width, 0.0),
+        input.dy.clamp(-overflow.height > 0 ? 0.0 : -overflow.height,0.0)
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,17 +140,17 @@ class CustomGestureDetector extends StatelessWidget {
 
         return GestureDetector(
           onScaleUpdate: (ScaleUpdateDetails details) {
-            double minScale = 1.0, maxScale = layout.maxHeight / (5 * kElementSize.height);
-            if (layout.maxWidth == kPeriodicTableSize.width && layout.maxHeight == kPeriodicTableSize.height) {
+            double minScale = 1.0, maxScale = layout.maxHeight / (5 * CustomGestureDetector.kElementSize.height);
+            if (layout.maxWidth == CustomGestureDetector.kPeriodicTableSize.width && layout.maxHeight == CustomGestureDetector.kPeriodicTableSize.height) {
               maxScale = minScale = 1.0;
-            } else if (layout.maxWidth > kPeriodicTableSize.width && layout.maxHeight > kPeriodicTableSize.height) {
-              double scaleX = layout.maxWidth / kPeriodicTableSize.width;
-              double scaleY = layout.maxHeight / kPeriodicTableSize.height;
+            } else if (layout.maxWidth > CustomGestureDetector.kPeriodicTableSize.width && layout.maxHeight > CustomGestureDetector.kPeriodicTableSize.height) {
+              double scaleX = layout.maxWidth / CustomGestureDetector.kPeriodicTableSize.width;
+              double scaleY = layout.maxHeight / CustomGestureDetector.kPeriodicTableSize.height;
 
               maxScale = math.max(scaleX, scaleY);
             } else {
-              double scaleX = layout.maxWidth / kPeriodicTableSize.width;
-              double scaleY = layout.maxHeight / kPeriodicTableSize.height;
+              double scaleX = layout.maxWidth / CustomGestureDetector.kPeriodicTableSize.width;
+              double scaleY = layout.maxHeight / CustomGestureDetector.kPeriodicTableSize.height;
 
               minScale = math.min(scaleX, scaleY);
             }
@@ -144,14 +197,11 @@ class CustomGestureDetector extends StatelessWidget {
             Offset newOff = provider.off + translationDelta + scaleOffset;
 
             final overflow = Size(
-              (kPeriodicTableSize.width * newScale) - layout.maxWidth,
-              (kPeriodicTableSize.height * newScale) - layout.maxHeight,
+              (CustomGestureDetector.kPeriodicTableSize.width * newScale) - layout.maxWidth,
+              (CustomGestureDetector.kPeriodicTableSize.height * newScale) - layout.maxHeight,
             );
 
-            newOff = Offset(
-              newOff.dx.clamp(-overflow.width > 0 ? 0.0 : -overflow.width, 0.0),
-              newOff.dy.clamp(-overflow.height > 0 ? 0.0 : -overflow.height,0.0)
-            );
+            newOff = _clampOffset(newOff, overflow);
 
             provider.scale = newScale;
             provider.off = newOff;
@@ -160,8 +210,25 @@ class CustomGestureDetector extends StatelessWidget {
             provider.prevScale = 1.0;
             provider.prevFocal = details.focalPoint;
           },
+          onScaleEnd: (ScaleEndDetails details) {
+            final double magnitude = details.velocity.pixelsPerSecond.distance;
+            if (magnitude < _kMinFlingVelocity) return;
+            final Offset direction = details.velocity.pixelsPerSecond / magnitude;
+            final double distance = (Offset.zero & context.size).shortestSide;
+
+            final overflow = Size(
+              (CustomGestureDetector.kPeriodicTableSize.width * provider.scale) - layout.maxWidth,
+              (CustomGestureDetector.kPeriodicTableSize.height * provider.scale) - layout.maxHeight,
+            );
+
+            _flingAnimation = _controller.drive(Tween<Offset>(
+              begin: provider.off, end: _clampOffset(provider.off + direction * distance, overflow)));
+            _controller
+              ..value = 0.0
+              ..fling(velocity: magnitude / 1000.0);
+          },
           behavior: HitTestBehavior.translucent,
-          child: child,
+          child: widget.child,
         );
       },
     );
