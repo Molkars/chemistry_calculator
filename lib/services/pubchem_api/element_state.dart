@@ -1,46 +1,46 @@
 import 'dart:collection';
 
 enum ElementState {
-  Solid,
-  Liquid,
-  Gas,
+  solid,
+  liquid,
+  gas,
 }
 
 extension ElementStateMethods on ElementState {
   static const Map<String, ElementState> keys = {
-    "Solid": ElementState.Solid,
-    "Liquid": ElementState.Liquid,
-    "Gas": ElementState.Gas,
+    "Solid": ElementState.solid,
+    "Liquid": ElementState.liquid,
+    "Gas": ElementState.gas,
   };
 
   static ElementState fromString(String key) => ElementStateMethods.keys[key];
 }
 
 enum ElementBlock {
-  Actinide,
-  AlkaliMetal,
-  AlkalineEarthMetal,
-  Halogen,
-  Lanthanide,
-  Metalloid,
-  NobleGas,
-  Nonmetal,
-  PostTransitionMetal,
-  TransitionMetal,
+  nonmetal,
+  alkaliMetal,
+  alkalineEarthMetal,
+  transitionMetal,
+  lanthanide,
+  actinide,
+  metalloid,
+  postTransitionMetal,
+  nobleGas,
+  halogen,
 }
 
 extension ElementBlockMethods on ElementBlock {
   static final Map<ElementBlock, String> blocks = <ElementBlock, String>{
-    ElementBlock.Actinide: "Actinide",
-    ElementBlock.AlkaliMetal: "Alkali metal",
-    ElementBlock.AlkalineEarthMetal: "Alkaline earth metal",
-    ElementBlock.Halogen: "Halogen",
-    ElementBlock.Lanthanide: "Lanthanide",
-    ElementBlock.Metalloid: "Metalloid",
-    ElementBlock.NobleGas: "Noble gas",
-    ElementBlock.Nonmetal: "Nonmetal",
-    ElementBlock.PostTransitionMetal: "Post-transition metal",
-    ElementBlock.TransitionMetal: "Transition metal",
+    ElementBlock.actinide: "Actinide",
+    ElementBlock.alkaliMetal: "Alkali metal",
+    ElementBlock.alkalineEarthMetal: "Alkaline earth metal",
+    ElementBlock.halogen: "Halogen",
+    ElementBlock.lanthanide: "Lanthanide",
+    ElementBlock.metalloid: "Metalloid",
+    ElementBlock.nobleGas: "Noble gas",
+    ElementBlock.nonmetal: "Nonmetal",
+    ElementBlock.postTransitionMetal: "Post-transition metal",
+    ElementBlock.transitionMetal: "Transition metal",
   };
 
   String get name => blocks.values.elementAt(blocks.keys.toList().indexOf(this));

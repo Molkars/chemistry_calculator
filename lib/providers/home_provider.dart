@@ -6,37 +6,27 @@ import 'package:flutter/material.dart';
 
 class HomeProvider with ChangeNotifier {
 
-  HomeProvider(this.context) : assert(context != null)
-  {
+
+  HomeProvider(this.context) {
     getElements().then((value) => elements = value);
   }
 
   final BuildContext context;
   List<PeriodicElement> _elements;
 
-  double _scale = 1.0, prevScale = 1.0;
-  Offset _off = Offset.zero, prevFocal = Offset.zero;
+  double _scale = 1.0;
+  double prevScale = 1.0;
 
-  double get scale => _scale;
-  set scale(double value) {
-    _scale = value;
-    notifyListeners();
-  }
-
-  Offset get off => _off;
-  set off(Offset value) {
-    _off = value;
-    notifyListeners();
-  }
+  Offset _off = Offset(8, 8);
+  Offset prevFocal;
 
   bool _gettingData = false;
   bool _error = false;
 
-  UnmodifiableListView<PeriodicElement> get elements => UnmodifiableListView(_elements);
-  set elements(List<PeriodicElement> value) {
-    _elements = value;
-    notifyListeners();
-  }
+  ElementPalette _elementPalette;
+
+  ElementPalette get elementPalette => _elementPalette;
+  set elementPalette(ElementPalette elementPalette) => _update(_elementPalette = elementPalette);
 
   Future<List<PeriodicElement>> getElements() async {
     gettingData = true;
@@ -49,15 +39,40 @@ class HomeProvider with ChangeNotifier {
         .whenComplete(() => gettingData = false);
   }
 
+  _update(dynamic assignmentStatement) => notifyListeners();
+
+  UnmodifiableListView<PeriodicElement> get elements => UnmodifiableListView(_elements);
+  set elements(List<PeriodicElement> value) => _update(_elements = value);
+
   bool get gettingData => _gettingData;
-  set gettingData(bool value) {
-    _gettingData = value;
-    notifyListeners();
-  }
+  set gettingData(bool value) => _update(_gettingData = value);
 
   bool get error => _error;
-  set error(bool value) {
-    _error = value;
-    notifyListeners();
-  }
+  set error(bool value) => _update(_error = value);
+
+  double get scale => _scale;
+  set scale(double value) => _update(_scale = value);
+
+  Offset get off => _off;
+  set off(Offset value) => _update(_off = value);
+}
+
+enum ElementPalette {
+  elementBlock,
+  default_,
+}
+
+extension ElementPaletteDecoratorMethods on ElementPalette {
+  static const List<ElementPalette> values = [
+    ElementPalette.default_,
+    ElementPalette.elementBlock,
+  ];
+
+  static const Map<ElementPalette, String> displayNames = {
+    ElementPalette.default_: "Default",
+    ElementPalette.elementBlock: "Group Block"
+  };
+
+  int get index => values.indexOf(this);
+  String get displayName => displayNames[this];
 }

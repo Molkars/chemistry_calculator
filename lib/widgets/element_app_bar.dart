@@ -1,5 +1,7 @@
 import 'package:chemistry_calculator/services/pubchem_api/pubchem_api.dart';
+import 'package:chemistry_calculator/util/element_color_maps.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ElementAppBar extends StatelessWidget {
@@ -14,8 +16,14 @@ class ElementAppBar extends StatelessWidget {
 
     return Material(
       elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.only(bottomRight: Radius.circular(24)),
+        side: BorderSide(
+          color: kStatePalette[element.defaultState] ?? Colors.black,
+          width: 2
+        ),
+      ),
       clipBehavior: Clip.antiAlias,
-      borderRadius: BorderRadius.only(bottomRight: Radius.circular(24)),
       color: theme.primaryColor,
       child: FractionallySizedBox(
         heightFactor: 0.15,

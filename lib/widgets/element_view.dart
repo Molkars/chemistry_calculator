@@ -25,12 +25,13 @@ class ElementView extends StatelessWidget {
           final theme = Theme.of(context);
 
           return Scaffold(
+            backgroundColor: Colors.white,
             body: Stack(
               children: [
                 ElementAppBar(this.element),
               ],
-              alignment: Alignment.topLeft,
               clipBehavior: Clip.antiAliasWithSaveLayer,
+              alignment: Alignment.topLeft,
             ),
           );
         },

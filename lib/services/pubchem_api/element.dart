@@ -49,7 +49,7 @@ class PeriodicElement {
       symbol: list.elementAt(1),
       name: list.elementAt(2),
       atomicMass: double.parse(list.elementAt(3).isEmpty ? "-1" : list.elementAt(3)),
-      cpkHexColor: Color(int.parse("FF" + list.elementAt(4), radix: 16)),
+      cpkHexColor: parseColor(list),
       electronConfiguration: list.elementAt(5),
       electronegativity: double.parse(list.elementAt(6).isEmpty ? "-1" : list.elementAt(6)),
       atomicRadius: int.parse(list.elementAt(7).isEmpty ? "-1" : list.elementAt(7)),
@@ -65,4 +65,11 @@ class PeriodicElement {
       position: elementPositions[list.elementAt(1)?.toLowerCase()],
     );
   }
+}
+
+Color parseColor(List<String> list) {
+  if (list[0] == "68") return const Color(0xFF00e675);
+  Color color = Color(int.parse("FF" + list[4], radix: 16));
+  if (color.opacity == 0.0) return const Color(0xFFFFFFFF);
+  return color;
 }
