@@ -1,4 +1,3 @@
-import 'dart:collection';
 
 enum ElementState {
   solid,
@@ -12,6 +11,14 @@ extension ElementStateMethods on ElementState {
     "Liquid": ElementState.liquid,
     "Gas": ElementState.gas,
   };
+
+  static const List<ElementState> values = [
+    ElementState.solid,
+    ElementState.liquid,
+    ElementState.gas
+  ];
+
+  int get index => values.indexOf(this);
 
   static ElementState fromString(String key) => ElementStateMethods.keys[key];
 }
@@ -43,6 +50,20 @@ extension ElementBlockMethods on ElementBlock {
     ElementBlock.transitionMetal: "Transition metal",
   };
 
+  static const List<ElementBlock> values = [
+    ElementBlock.nonmetal,
+    ElementBlock.alkaliMetal,
+    ElementBlock.alkalineEarthMetal,
+    ElementBlock.transitionMetal,
+    ElementBlock.lanthanide,
+    ElementBlock.actinide,
+    ElementBlock.metalloid,
+    ElementBlock.postTransitionMetal,
+    ElementBlock.nobleGas,
+    ElementBlock.halogen,
+  ];
+
+  int get index => values.indexOf(this);
   String get name => blocks.values.elementAt(blocks.keys.toList().indexOf(this));
   static ElementBlock fromString(String value) => blocks.keys.elementAt(blocks.values.toList().indexOf(value));
 }

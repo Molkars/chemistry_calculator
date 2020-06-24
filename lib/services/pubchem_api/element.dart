@@ -65,6 +65,58 @@ class PeriodicElement {
       position: elementPositions[list.elementAt(1)?.toLowerCase()],
     );
   }
+
+  factory PeriodicElement.fromJson(Map<String, dynamic> json) {
+    return PeriodicElement(
+      atomicNumber: json['atomicNumber'],
+      symbol: json['symbol'],
+      name: json['name'],
+      atomicMass: json['atomicMass'],
+      cpkHexColor: Color(json['cpkHexColor']),
+      electronConfiguration: json['electronConfiguration'],
+      electronegativity: json['electronegativity'],
+      atomicRadius: json['atomicRadius'],
+      ionizationEnergy: json['ionizationEnergy'],
+      electronAffinity: json['electronAffinity'],
+      oxidationStates: (json['oxidationStates'] as String).split(',').map<int>((s) => int.parse(s.isEmpty ? "0" : s)).toList(),
+      defaultState: json['defaultState'] != -1 ? ElementState.values[json['defaultState']] : null,
+      meltingPoint: json['meltingPoint'],
+      boilingPoint: json['boilingPoint'],
+      density: json['density'],
+      groupBlock: ElementBlock.values[json['groupBlock']],
+      yearDiscovered: json['yearDiscovered'],
+      position: elementPositions[(json['symbol'] as String).toLowerCase()],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    print("Element: $name, defaultState: $defaultState");
+
+    return <String, dynamic>{
+      "atomicNumber": atomicNumber,
+      "symbol": symbol,
+      "name": name,
+      "atomicMass": atomicMass,
+      "cpkHexColor": cpkHexColor.value,
+      "electronConfiguration": electronConfiguration,
+      "electronegativity": electronegativity,
+      "atomicRadius": atomicRadius,
+      "ionizationEnergy": ionizationEnergy,
+      "electronAffinity": electronAffinity,
+      "oxidationStates": oxidationStates.join(","),
+      "defaultState": defaultState?.index ?? -1,
+      "meltingPoint": meltingPoint,
+      "boilingPoint": boilingPoint,
+      "density": density,
+      "groupBlock": groupBlock.index,
+      "yearDiscovered": yearDiscovered,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'PeriodicElement{atomicNumber: $atomicNumber, symbol: $symbol, name: $name, atomicMass: $atomicMass, cpkHexColor: $cpkHexColor, electronConfiguration: $electronConfiguration, electronegativity: $electronegativity, atomicRadius: $atomicRadius, ionizationEnergy: $ionizationEnergy, electronAffinity: $electronAffinity, oxidationStates: $oxidationStates, defaultState: $defaultState, meltingPoint: $meltingPoint, boilingPoint: $boilingPoint, density: $density, groupBlock: $groupBlock, yearDiscovered: $yearDiscovered, position: $position}';
+  }
 }
 
 Color parseColor(List<String> list) {

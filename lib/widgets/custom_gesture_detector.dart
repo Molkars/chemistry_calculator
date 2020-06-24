@@ -10,7 +10,10 @@ const double _kMinFlingVelocity = 800.0;
 class CustomGestureDetector extends StatefulWidget {
 
   final Widget child;
-  static Size kPeriodicTableSize = Size(kElementSize.width * 18 + 2 * kPadding, kElementSize.height * 9 + kDivisionSize + 2 * kPadding);
+  static Size kPeriodicTableSize = Size(
+      (kElementSize.width * 18) + (2 * kPadding) + (17 * kSpacing),
+      (kElementSize.height * 9) + (2 * kPadding) + (08 * kSpacing) + kDivisionSize
+  );
 
   const CustomGestureDetector({this.child});
 

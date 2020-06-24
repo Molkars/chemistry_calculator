@@ -17,8 +17,7 @@ void main() async {
 }
 
 class AppView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget _whichView() {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (BuildContext context) => HomeProvider(context)),
@@ -29,5 +28,10 @@ class AppView extends StatelessWidget {
         home: ChemistryCalculator(),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _whichView();
   }
 }

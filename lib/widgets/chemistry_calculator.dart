@@ -1,5 +1,6 @@
 import 'package:chemistry_calculator/providers/home_provider.dart';
-import 'package:chemistry_calculator/services/pubchem_api/pubchem_api.dart';
+import 'package:chemistry_calculator/services/periodic_elements/periodic_elements.dart';
+import 'package:chemistry_calculator/util/element_color_palettes.dart';
 import 'package:chemistry_calculator/widgets/custom_gesture_detector.dart';
 import 'package:chemistry_calculator/widgets/element_tile.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 const Size kElementSize = const Size(72, 72);
 const double kDivisionSize = 20.0;
 const double kPadding = 8.0;
+const double kSpacing = 4.0;
 
 class ChemistryCalculator extends StatelessWidget {
 
@@ -17,8 +19,10 @@ class ChemistryCalculator extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<HomeProvider>(context);
 
-    return Scaffold(
-      appBar: AppBar(
+    PreferredSizeWidget _appBar() {
+      PreferredSizeWidget appBar;
+
+      appBar = AppBar(
         actions: [
           PopupMenuButton<ElementPalette>(
             icon: Icon(Icons.more_vert),
@@ -26,7 +30,9 @@ class ChemistryCalculator extends StatelessWidget {
             itemBuilder: (context) {
               List<PopupMenuEntry> entries = ElementPalette.values.reversed.map<PopupMenuEntry<ElementPalette>>((item) {
                 return PopupMenuItem(
-                  child: Text(item.displayName),
+                  child: provider.elementPalette == item
+                    ? ColoredBox(color: Colors.grey, child: Text(item.displayName))
+                    : Text(item.displayName),
                   value: item,
                 );
               }).toList();
@@ -35,7 +41,13 @@ class ChemistryCalculator extends StatelessWidget {
             },
           )
         ],
-      ),
+      );
+
+      return appBar;
+    }
+
+    return Scaffold(
+      appBar: _appBar(),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints layout) {
 
@@ -44,11 +56,15 @@ class ChemistryCalculator extends StatelessWidget {
             provider.elements.map<Widget>((PeriodicElement element) {
 
 
+
+              Offset position = Offset(
+                  (element.position.dx * (kElementSize.width + kSpacing)),
+                  (element.position.dy * (kElementSize.height + kSpacing)) + (element.position.dy > 6 ? kDivisionSize : 0.0)
+              );
+
               return Positioned(
-                // Offset plus the height of the tile + 20 pixels if the element is an actinide or lanthanide
-                top: provider.off.dy + (element.position.dy * kElementSize.height * provider.scale) + (element.position.dy > 6 ? kDivisionSize : 0),
-                // Offset plus the width of the tile(posX * width * scale)
-                left: provider.off.dx + (element.position.dx * kElementSize.width * provider.scale),
+                top: provider.off.dy + position.dy * provider.scale,
+                left: provider.off.dx + position.dx * provider.scale,
                 child: Transform.scale(
                   scale: provider.scale,
                   alignment: Alignment.topLeft,
@@ -66,16 +82,13 @@ class ChemistryCalculator extends StatelessWidget {
             );
           }
 
-          if (provider.gettingData) {
-            return Center(child: CircularProgressIndicator());
-          } else {
-            return ColoredBox(
-              color: Colors.blue,
-              child: CustomGestureDetector(child: _body()),
-            );
-          }
+          return ColoredBox(
+            color: Colors.blue,
+            child: CustomGestureDetector(child: _body()),
+          );
         },
       ),
     );
   }
 }
+
